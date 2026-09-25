@@ -7,6 +7,7 @@
   const search = document.querySelector("#catalog-search");
   const categoryFilters = document.querySelector("#category-filters");
   const brandFilters = document.querySelector("#brand-filters");
+  const brandLabel = document.querySelector("#brand-label");
   const visibleCount = document.querySelector("#visible-count");
   const clearFilters = document.querySelector("#clear-filters");
   const loadMore = document.querySelector("#load-more");
@@ -146,6 +147,7 @@
     const counts = new Map();
     pool.forEach((product) => counts.set(product.brand, (counts.get(product.brand) || 0) + 1));
     if (activeBrand !== "all" && !brands.includes(activeBrand)) activeBrand = "all";
+    brandLabel.textContent = activeCategory === "eyewear" ? "Tipo de lentes" : "Colección / marca";
     brandFilters.replaceChildren(
       button("Todas", "all", "brand", activeBrand === "all"),
       ...brands.map((brand) => button(`${brand} · ${counts.get(brand)}`, brand, "brand", activeBrand === brand)),
@@ -227,6 +229,14 @@
     resetPaginationAndRender();
   };
 
+  const selectCategory = (category) => {
+    activeCategory = category;
+    activeBrand = "all";
+    renderCategoryFilters();
+    renderBrandFilters();
+    resetPaginationAndRender();
+  };
+
   const openProduct = (productId, updateHash = true) => {
     const index = filteredProducts.findIndex((product) => product.id === productId);
     const fallbackIndex = products.findIndex((product) => product.id === productId);
@@ -281,11 +291,14 @@
   categoryFilters.addEventListener("click", (event) => {
     const chip = event.target.closest(".filter-chip");
     if (!chip) return;
-    activeCategory = chip.dataset.value;
-    activeBrand = "all";
-    updatePressed(categoryFilters, activeCategory);
-    renderBrandFilters();
-    resetPaginationAndRender();
+    selectCategory(chip.dataset.value);
+  });
+
+  document.querySelectorAll("[data-category-jump]").forEach((trigger) => {
+    trigger.addEventListener("click", () => {
+      selectCategory(trigger.dataset.categoryJump);
+      document.querySelector("#catalogo").scrollIntoView({ behavior: "smooth" });
+    });
   });
 
   brandFilters.addEventListener("click", (event) => {

@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#0a0c0f" />
     <meta
       name="description"
-      content="Catálogo completo de Unvelour: ropa, calzado, accesorios, deporte y marcas."
+      content="Catálogo completo de Unvelour: ropa, calzado, lentes, accesorios, deporte y marcas."
     />
     <title>Unvelour | Catálogo completo</title>
     <link
@@ -14,9 +14,9 @@
       type="image/svg+xml"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0c0f'/%3E%3Cpath d='M14 18v19c0 9 7 15 18 15s18-6 18-15V18h-9v19c0 4-3 7-9 7s-9-3-9-7V18z' fill='%23f4f2ed'/%3E%3Cpath d='M14 12h36v5H14z' fill='%23ef302f'/%3E%3C/svg%3E"
     />
-    <link rel="stylesheet" href="./styles.css" />
-    <script src="./catalog-data.js?v=3" defer></script>
-    <script src="./app.js?v=5" defer></script>
+    <link rel="stylesheet" href="./styles.css?v=6" />
+    <script src="./catalog-data.js?v=6" defer></script>
+    <script src="./app.js?v=6" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#catalogo">Ir al catálogo</a>
@@ -27,6 +27,7 @@
       </a>
       <nav class="main-nav" aria-label="Navegación principal">
         <a href="#catalogo">Catálogo</a>
+        <a href="#categorias">Categorías</a>
         <a href="#marcas">Marcas</a>
       </nav>
       <button class="header-search" type="button" data-focus-search>
@@ -40,11 +41,15 @@
     <main>
       <section class="masthead" id="inicio" aria-labelledby="page-title">
         <div class="masthead-copy">
-          <p class="eyebrow">CATÁLOGO 2026</p>
-          <h1 id="page-title">Complete<br /><em>Collection</em></h1>
+          <p class="eyebrow">UNVELOUR / CATÁLOGO 2026</p>
+          <h1 id="page-title">Todo el estilo.<br /><em>Un solo lugar.</em></h1>
           <p class="masthead-intro">
-            Ropa, calzado, accesorios y colecciones de marcas seleccionadas en un solo catálogo.
+            Descubre ropa, calzado, lentes y accesorios seleccionados en una colección creada para explorar sin límites.
           </p>
+          <div class="hero-actions">
+            <button type="button" data-focus-search>Explorar catálogo <span>↘</span></button>
+            <a href="#categorias">Ver categorías</a>
+          </div>
         </div>
         <div class="masthead-visual" aria-label="Selección destacada">
           <figure class="hero-card hero-card-main">
@@ -52,15 +57,47 @@
             <figcaption><span>ADIDAS</span><strong>146 PRODUCTOS</strong></figcaption>
           </figure>
           <figure class="hero-card hero-card-small">
-            <img src="./assets/featured/shoes.webp" alt="Calzado disponible en el catálogo" />
-            <figcaption><span>CALZADO</span><strong>394 PRODUCTOS</strong></figcaption>
+            <img src="./assets/featured/lentes.jpg" alt="Lentes disponibles en el catálogo" />
+            <figcaption><span>LENTES</span><strong>139 PRODUCTOS</strong></figcaption>
           </figure>
         </div>
         <dl class="catalog-stats" aria-label="Resumen del catálogo">
           <div><dt>Productos</dt><dd>5.493</dd></div>
           <div><dt>Colecciones</dt><dd>47</dd></div>
-          <div><dt>Secciones</dt><dd>07</dd></div>
+          <div><dt>Secciones</dt><dd>08</dd></div>
         </dl>
+      </section>
+
+      <section class="category-showcase" id="categorias" aria-labelledby="category-showcase-title">
+        <div class="section-intro">
+          <div>
+            <p class="eyebrow">COMPRA POR CATEGORÍA</p>
+            <h2 id="category-showcase-title">Encuentra lo tuyo</h2>
+          </div>
+          <p>Entra directamente a las colecciones más buscadas.</p>
+        </div>
+        <div class="category-cards">
+          <button class="category-card category-card-dark" type="button" data-category-jump="clothing">
+            <span class="category-number">01</span>
+            <span class="category-name">Ropa</span>
+            <span class="category-meta">1.689 productos <b>↗</b></span>
+          </button>
+          <button class="category-card category-card-red" type="button" data-category-jump="footwear">
+            <span class="category-number">02</span>
+            <span class="category-name">Calzado</span>
+            <span class="category-meta">394 productos <b>↗</b></span>
+          </button>
+          <button class="category-card category-card-eyewear" type="button" data-category-jump="eyewear">
+            <span class="category-number">03</span>
+            <span class="category-name">Lentes</span>
+            <span class="category-meta">139 productos <b>↗</b></span>
+          </button>
+          <button class="category-card category-card-light" type="button" data-category-jump="accessories">
+            <span class="category-number">04</span>
+            <span class="category-name">Accesorios</span>
+            <span class="category-meta">1.228 productos <b>↗</b></span>
+          </button>
+        </div>
       </section>
 
       <section class="catalog-shell" id="catalogo" aria-labelledby="catalog-title">
@@ -116,7 +153,7 @@
 
     <footer class="site-footer">
       <strong>UNVELOUR</strong>
-      <p>Complete Collection · 2026</p>
+      <p>Curated Collection · 2026</p>
       <a href="#inicio">Volver arriba ↑</a>
     </footer>
 
