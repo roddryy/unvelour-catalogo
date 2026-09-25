@@ -147,7 +147,7 @@
     const counts = new Map();
     pool.forEach((product) => counts.set(product.brand, (counts.get(product.brand) || 0) + 1));
     if (activeBrand !== "all" && !brands.includes(activeBrand)) activeBrand = "all";
-    brandLabel.textContent = activeCategory === "eyewear" ? "Tipo de lentes" : "Colección / marca";
+    brandLabel.textContent = activeCategory === "eyewear" ? "Marca de lentes" : "Colección / marca";
     brandFilters.replaceChildren(
       button("Todas", "all", "brand", activeBrand === "all"),
       ...brands.map((brand) => button(`${brand} · ${counts.get(brand)}`, brand, "brand", activeBrand === brand)),
