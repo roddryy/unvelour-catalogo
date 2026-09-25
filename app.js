@@ -14,6 +14,7 @@
   const dialog = document.querySelector("#product-dialog");
 
   const PAGE_SIZE = 32;
+  const THUMB_ARCHIVE = "./catalog-thumbs.tar.gz";
   const FALLBACK_IMAGE =
     "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 720 720'%3E%3Crect width='720' height='720' fill='%23f7f6f2'/%3E%3Cpath d='M280 318h160v84H280z' fill='none' stroke='%23c4c5c1' stroke-width='4'/%3E%3Cpath d='m300 382 38-36 31 29 20-18 31 25' fill='none' stroke='%23c4c5c1' stroke-width='4'/%3E%3Ctext x='360' y='448' text-anchor='middle' font-family='Arial' font-size='20' fill='%23727675'%3EIMAGEN NO DISPONIBLE%3C/text%3E%3C/svg%3E";
   let activeCategory = "all";
@@ -22,6 +23,38 @@
   let shown = PAGE_SIZE;
   let filteredProducts = [...products];
   let activeProductIndex = -1;
+  const thumbnailUrls = new Map();
+
+  const thumbnailMime = (name) => {
+    if (name.endsWith(".png")) return "image/png";
+    if (name.endsWith(".jpg") || name.endsWith(".jpeg")) return "image/jpeg";
+    return "image/webp";
+  };
+
+  const loadThumbnailArchive = async () => {
+    if (!window.DecompressionStream) throw new Error("El navegador no admite archivos comprimidos.");
+    const response = await fetch(THUMB_ARCHIVE, { cache: "force-cache" });
+    if (!response.ok || !response.body) throw new Error(`No se pudo cargar ${THUMB_ARCHIVE}`);
+    const decompressed = response.body.pipeThrough(new DecompressionStream("gzip"));
+    const bytes = new Uint8Array(await new Response(decompressed).arrayBuffer());
+    const decoder = new TextDecoder();
+    let offset = 0;
+    while (offset + 512 <= bytes.length) {
+      const name = decoder.decode(bytes.subarray(offset, offset + 100)).replace(/\0.*$/, "");
+      if (!name) break;
+      const sizeText = decoder.decode(bytes.subarray(offset + 124, offset + 136)).replace(/\0.*$/, "").trim();
+      const size = parseInt(sizeText || "0", 8);
+      const dataStart = offset + 512;
+      const dataEnd = dataStart + size;
+      const idMatch = name.match(/(\d+)\.[a-z0-9]+$/i);
+      if (idMatch && size > 0 && dataEnd <= bytes.length) {
+        const id = Number(idMatch[1]);
+        thumbnailUrls.set(id, URL.createObjectURL(new Blob([bytes.slice(dataStart, dataEnd)], { type: thumbnailMime(name) })));
+      }
+      offset = dataStart + Math.ceil(size / 512) * 512;
+    }
+    return thumbnailUrls.size;
+  };
 
   const normalize = (value) =>
     value
@@ -96,8 +129,7 @@
     card.style.setProperty("--card-index", index);
     open.dataset.productId = product.id;
     open.setAttribute("aria-label", `Ver ${product.brand}, referencia ${product.reference}`);
-    image.src = product.image;
-    image.referrerPolicy = "no-referrer";
+    image.src = thumbnailUrls.get(product.id) || FALLBACK_IMAGE;
     image.addEventListener("error", () => {
       image.onerror = null;
       image.src = FALLBACK_IMAGE;
@@ -154,8 +186,7 @@
     const navigationPool = index >= 0 ? filteredProducts : products;
 
     const dialogImage = document.querySelector("#dialog-image");
-    dialogImage.src = product.image;
-    dialogImage.referrerPolicy = "no-referrer";
+    dialogImage.src = thumbnailUrls.get(product.id) || FALLBACK_IMAGE;
     dialogImage.alt = `${product.type} ${product.brand}`;
     dialogImage.onerror = () => {
       dialogImage.onerror = null;
@@ -273,13 +304,22 @@
     }
   });
 
-  renderCategoryFilters();
-  renderBrandFilters();
-  renderProducts();
+  const start = async () => {
+    renderCategoryFilters();
+    renderBrandFilters();
+    renderProducts();
+    try {
+      const loaded = await loadThumbnailArchive();
+      if (loaded) renderProducts();
+    } catch (error) {
+      console.warn("No se pudo cargar el archivo local de miniaturas.", error);
+    }
+    const hashMatch = location.hash.match(/^#(UNV-\d{4})$/i);
+    if (hashMatch) {
+      const product = products.find((item) => item.reference === hashMatch[1].toUpperCase());
+      if (product) openProduct(product.id, false);
+    }
+  };
 
-  const hashMatch = location.hash.match(/^#(UNV-\d{4})$/i);
-  if (hashMatch) {
-    const product = products.find((item) => item.reference === hashMatch[1].toUpperCase());
-    if (product) openProduct(product.id, false);
-  }
+  start();
 })();

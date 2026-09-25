@@ -18,8 +18,9 @@ GitHub mostrará la dirección pública cuando termine la publicación.
 - `styles.css`: diseño adaptable a celular y computadora, con entradas escalonadas, portada animada y estados hover.
 - `app.js`: búsqueda, filtros y fichas de producto.
 - `catalog-data.js`: datos de las 5.493 referencias.
-- `assets/featured/`: imágenes destacadas de portada.
+- `catalog-thumbs.tar.gz`: miniaturas locales de las 5.493 referencias.
+- `adidas.webp` y `shoes.webp`: imágenes destacadas de portada.
 
-Las fotografías de producto se cargan desde el catálogo original y aparecen de forma progresiva para que el repositorio sea liviano.
+Las miniaturas de producto se incluyen en `catalog-thumbs.tar.gz` para evitar el bloqueo de imágenes externas de Yupoo. El navegador las descomprime automáticamente y las muestra de forma progresiva.
 
 El sitio no necesita servidor, base de datos ni instalación de dependencias.
