@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0a0c0f" />
+    <meta
+      name="description"
+      content="Catálogo completo de Unvelour: ropa, calzado, accesorios, deporte y marcas."
+    />
+    <title>Unvelour | Catálogo completo</title>
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0c0f'/%3E%3Cpath d='M14 18v19c0 9 7 15 18 15s18-6 18-15V18h-9v19c0 4-3 7-9 7s-9-3-9-7V18z' fill='%23f4f2ed'/%3E%3Cpath d='M14 12h36v5H14z' fill='%23ef302f'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="./catalog-data.js" defer></script>
+    <script src="./app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#catalogo">Ir al catálogo</a>
+
+    <header class="site-header">
+      <a class="wordmark" href="#inicio" aria-label="Unvelour, inicio">
+        UNVELOUR
+      </a>
+      <nav class="main-nav" aria-label="Navegación principal">
+        <a href="#catalogo">Catálogo</a>
+        <a href="#marcas">Marcas</a>
+      </nav>
+      <button class="header-search" type="button" data-focus-search>
+        <svg aria-hidden="true" viewBox="0 0 24 24">
+          <path d="m21 21-4.4-4.4m2.4-5.1a7.5 7.5 0 1 1-15 0 7.5 7.5 0 0 1 15 0Z" />
+        </svg>
+        <span>Buscar</span>
+      </button>
+    </header>
+
+    <main>
+      <section class="masthead" id="inicio" aria-labelledby="page-title">
+        <div class="masthead-copy">
+          <p class="eyebrow">CATÁLOGO 2026</p>
+          <h1 id="page-title">Complete<br /><em>Collection</em></h1>
+          <p class="masthead-intro">
+            Ropa, calzado, accesorios y colecciones de marcas seleccionadas en un solo catálogo.
+          </p>
+        </div>
+        <div class="masthead-visual" aria-label="Selección destacada">
+          <figure class="hero-card hero-card-main">
+            <img src="./assets/featured/adidas.webp" alt="Selección de ropa Adidas" />
+            <figcaption><span>ADIDAS</span><strong>146 PRODUCTOS</strong></figcaption>
+          </figure>
+          <figure class="hero-card hero-card-small">
+            <img src="./assets/featured/shoes.webp" alt="Calzado disponible en el catálogo" />
+            <figcaption><span>CALZADO</span><strong>394 PRODUCTOS</strong></figcaption>
+          </figure>
+        </div>
+        <dl class="catalog-stats" aria-label="Resumen del catálogo">
+          <div><dt>Productos</dt><dd>5.493</dd></div>
+          <div><dt>Colecciones</dt><dd>47</dd></div>
+          <div><dt>Secciones</dt><dd>07</dd></div>
+        </dl>
+      </section>
+
+      <section class="catalog-shell" id="catalogo" aria-labelledby="catalog-title">
+        <div class="catalog-heading">
+          <div>
+            <p class="eyebrow">COLECCIÓN COMPLETA</p>
+            <h2 id="catalog-title">Explora el catálogo</h2>
+          </div>
+          <p class="results-count" aria-live="polite"><strong id="visible-count">5.493</strong> productos</p>
+        </div>
+
+        <div class="catalog-tools">
+          <label class="search-box" for="catalog-search">
+            <svg aria-hidden="true" viewBox="0 0 24 24">
+              <path d="m21 21-4.4-4.4m2.4-5.1a7.5 7.5 0 1 1-15 0 7.5 7.5 0 0 1 15 0Z" />
+            </svg>
+            <input
+              id="catalog-search"
+              type="search"
+              placeholder="Buscar marca, categoría, código o referencia"
+              autocomplete="off"
+            />
+            <kbd>⌘ K</kbd>
+          </label>
+          <button class="clear-filters" id="clear-filters" type="button" hidden>Limpiar filtros</button>
+        </div>
+
+        <div class="filter-block" aria-labelledby="category-label">
+          <span class="filter-label" id="category-label">Sección</span>
+          <div class="filter-row" id="category-filters" role="group" aria-label="Filtrar por categoría"></div>
+        </div>
+
+        <div class="filter-block brand-filter-block" id="marcas" aria-labelledby="brand-label">
+          <span class="filter-label" id="brand-label">Colección / marca</span>
+          <div class="filter-row brand-row" id="brand-filters" role="group" aria-label="Filtrar por colección o marca"></div>
+        </div>
+
+        <div class="product-grid" id="product-grid"></div>
+
+        <div class="empty-state" id="empty-state" hidden>
+          <span>00</span>
+          <h3>No encontramos coincidencias</h3>
+          <p>Prueba otra marca, categoría o referencia.</p>
+          <button type="button" data-reset-filters>Ver todo el catálogo</button>
+        </div>
+
+        <button class="load-more" id="load-more" type="button" hidden>
+          Ver más productos
+          <span aria-hidden="true">↓</span>
+        </button>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <strong>UNVELOUR</strong>
+      <p>Complete Collection · 2026</p>
+      <a href="#inicio">Volver arriba ↑</a>
+    </footer>
+
+    <dialog class="product-dialog" id="product-dialog" aria-labelledby="dialog-title">
+      <div class="dialog-layout">
+        <div class="dialog-media">
+          <img id="dialog-image" alt="" />
+          <span class="dialog-counter" id="dialog-counter"></span>
+        </div>
+        <div class="dialog-content">
+          <button class="dialog-close" type="button" data-close-dialog aria-label="Cerrar ficha">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 5l14 14M19 5 5 19" /></svg>
+          </button>
+          <p class="dialog-category" id="dialog-category"></p>
+          <h2 id="dialog-title"></h2>
+          <p class="dialog-type" id="dialog-type"></p>
+          <div class="dialog-reference">
+            <span>Referencia</span>
+            <strong id="dialog-reference"></strong>
+          </div>
+          <p class="dialog-original" id="dialog-original"></p>
+          <button class="copy-reference" id="copy-reference" type="button">
+            Copiar referencia
+          </button>
+          <div class="dialog-nav">
+            <button type="button" id="previous-product" aria-label="Producto anterior">← Anterior</button>
+            <button type="button" id="next-product" aria-label="Producto siguiente">Siguiente →</button>
+          </div>
+        </div>
+      </div>
+    </dialog>
+
+    <template id="product-card-template">
+      <article class="product-card">
+        <button class="product-open" type="button">
+          <span class="product-image-wrap">
+            <img class="product-image" alt="" loading="lazy" decoding="async" />
+            <span class="view-product">Ver ficha ↗</span>
+          </span>
+          <span class="product-info">
+            <span class="product-brand"></span>
+            <strong class="product-reference"></strong>
+            <span class="product-type"></span>
+          </span>
+        </button>
+      </article>
+    </template>
+  </body>
+</html>
