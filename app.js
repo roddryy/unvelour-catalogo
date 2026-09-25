@@ -14,7 +14,14 @@
   const dialog = document.querySelector("#product-dialog");
 
   const PAGE_SIZE = 32;
-  const THUMB_ARCHIVE = "./catalog-thumbs.tar.gz";
+  // GitHub web uploads limit each file to 25 MiB, so the gzip archive is
+  // stored as four smaller parts and joined in memory before decompression.
+  const THUMB_PARTS = [
+    "./catalog-thumbs-01.bin",
+    "./catalog-thumbs-02.bin",
+    "./catalog-thumbs-03.bin",
+    "./catalog-thumbs-04.bin",
+  ];
   const FALLBACK_IMAGE =
     "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 720 720'%3E%3Crect width='720' height='720' fill='%23f7f6f2'/%3E%3Cpath d='M280 318h160v84H280z' fill='none' stroke='%23c4c5c1' stroke-width='4'/%3E%3Cpath d='m300 382 38-36 31 29 20-18 31 25' fill='none' stroke='%23c4c5c1' stroke-width='4'/%3E%3Ctext x='360' y='448' text-anchor='middle' font-family='Arial' font-size='20' fill='%23727675'%3EIMAGEN NO DISPONIBLE%3C/text%3E%3C/svg%3E";
   let activeCategory = "all";
@@ -33,9 +40,14 @@
 
   const loadThumbnailArchive = async () => {
     if (!window.DecompressionStream) throw new Error("El navegador no admite archivos comprimidos.");
-    const response = await fetch(THUMB_ARCHIVE, { cache: "force-cache" });
-    if (!response.ok || !response.body) throw new Error(`No se pudo cargar ${THUMB_ARCHIVE}`);
-    const decompressed = response.body.pipeThrough(new DecompressionStream("gzip"));
+    const responses = await Promise.all(
+      THUMB_PARTS.map((part) => fetch(part, { cache: "force-cache" })),
+    );
+    if (responses.some((response) => !response.ok)) {
+      throw new Error("No se pudieron cargar las partes de miniaturas.");
+    }
+    const parts = await Promise.all(responses.map((response) => response.arrayBuffer()));
+    const decompressed = new Blob(parts).stream().pipeThrough(new DecompressionStream("gzip"));
     const bytes = new Uint8Array(await new Response(decompressed).arrayBuffer());
     const decoder = new TextDecoder();
     let offset = 0;
